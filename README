@@ -1,0 +1,15 @@
+# Les tests avec Java
+
+Ce projet regroupe l'ensemble des ressources citées dans la présentation sur les tests avec Java pour [Tahitidevops](https://devops.pf)
+
+## Utilisation
+
+Les tests sont lançables directement par gradle:
+
+```
+./gradlew test
+```
+
+## License
+
+Ce projet est sous licence MIT.
