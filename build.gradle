@@ -9,9 +9,11 @@
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
-	
+
     // Apply the application plugin to add support for building a CLI application.
     id 'application'
+
+    id "io.freefair.lombok" version "5.0.0-rc2"
 }
 
 repositories {
@@ -31,11 +33,21 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
 
     compile 'info.picocli:picocli:4.2.0'
+
+    implementation 'org.simplejavamail:simple-java-mail:6.0.3'
+
+    implementation 'com.sparkpost:sparkpost-lib:0.22'
+
+    implementation 'org.yaml:snakeyaml:1.25'
+
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+
+    testCompile "org.mockito:mockito-core:2.+"
 }
 
 application {
     // Define the main class for the application.
-    mainClassName = 'io.paraita.mail-sender.App'
+    mainClassName = 'io.paraita.examples.App'
 }
 
 test {

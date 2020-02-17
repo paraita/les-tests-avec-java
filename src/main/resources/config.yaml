@@ -1,0 +1,4 @@
+smtp:
+  provider: sparkpost
+  apiKey: "1238UNJHK?FV7I89HNJBKF7986R2J"
+  senderAddress: hello@hipopochat.com
