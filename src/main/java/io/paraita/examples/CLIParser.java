@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -36,7 +35,7 @@ public class CLIParser implements Callable<Campagne> {
 
     protected boolean emailAddressIsValid(String address) {
         Boolean result = false;
-        if (address.matches("([a-z0-9.\\-_]+)@([a-z0-9.\\-_]+)")) {
+        if (address.matches("([a-z0-9.\\-_]+)@([a-z0-9\\-_]+)\\.([a-z0-9\\-_]+)")) {
             result = true;
         }
         else {

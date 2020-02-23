@@ -43,6 +43,8 @@ dependencies {
     testImplementation 'org.hamcrest:hamcrest:2.2'
 
     testCompile "org.mockito:mockito-core:2.+"
+
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.6.0'
 }
 
 application {

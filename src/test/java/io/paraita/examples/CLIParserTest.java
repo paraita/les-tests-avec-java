@@ -2,24 +2,32 @@ package io.paraita.examples;
 
 import io.paraita.examples.mail.Mailer;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.internal.matchers.NotNull;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class CLIParserTest {
 
+    // flaky
     @Mock
     File config;
+
+    // flaky
+    @Mock
+    File addresses;
 
     @InjectMocks
     CLIParser cliParser;
@@ -30,17 +38,58 @@ class CLIParserTest {
     }
 
     @Test
+
+    void testGetMailerFileDoesntExist() {
+        when(config.getAbsolutePath()).thenReturn("config-existe-pas.yaml");
+        Assertions.assertThrows(YAMLException.class, () -> {
+            cliParser.getMailer();
+        });
+    }
+
+    @Test
     void testGetMailerSparkpostProvider() {
-        when(config.getAbsolutePath()).thenReturn("config.yaml");
-        Mailer res = cliParser.getMailer();
-        assertThat(res, is(notNullValue()));
+        when(config.getAbsolutePath()).thenReturn("config-sparkpost.yaml");
+        assertThat(cliParser.getMailer(), is(notNullValue()));
     }
 
     @Test
-    void testEmailAddressIsValid() {
+    void testGetMailerGmailProviderIsNotSupported() {
+        when(config.getAbsolutePath()).thenReturn("config-gmail.yaml");
+        assertThat(cliParser.getMailer(), is(nullValue()));
+    }
+
+    @ParameterizedTest(name = "{0} is a valid address")
+    @ValueSource(strings = {"toto@tata.titi", "toto.tata@titi.pf", "toto-tata@titi.pf", "hello_123@titi.pf"})
+    void testEmailAddressIsValidWithValidAddress(String emailAddress) {
+        assertThat(cliParser.emailAddressIsValid(emailAddress), is(true));
+    }
+
+    @ParameterizedTest(name = "{0} is an invalid address")
+    @ValueSource(strings = {"hello@toto,pf", "hey@localhost", "h@h@@titi.pf", "hey @titi.pf"})
+    void testEmailAddressIsValidWithInvalidAddress(String emailAddress) {
+        assertThat(cliParser.emailAddressIsValid(emailAddress), is(false));
     }
 
     @Test
-    void testGetAddressesList() {
+    void testGetAddressesListWith5ValidAddresses() {
+        when(addresses.getPath()).thenReturn("5_adresses_email_valides.txt");
+        assertThat(cliParser.getAddressesList().size(), is(5));
     }
+
+    @Test
+    void testGetAddressesListWith4ValidAnd1InvalidAddresses() {
+        when(addresses.getPath()).thenReturn("4_adresses_email_valides_1_invalide.txt");
+        assertThat(cliParser.getAddressesList().size(), is(4));
+    }
+
+    @Test
+    void testGetAddressesListFileDoesntExist() {
+        fail();
+    }
+
+    @Test
+    void testGetAddressesListEmptyFile() {
+        fail();
+    }
+
 }

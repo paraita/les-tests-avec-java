@@ -1,0 +1,5 @@
+toto.titi@tata.pf
+toto@titi.pf
+ta&ta@toto.pf
+toto@titi.tata
+toto123@titi.tata

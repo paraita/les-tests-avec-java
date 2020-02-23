@@ -1,0 +1,4 @@
+smtp:
+  provider: gmail
+  senderPassword: "TEST_API_KEY"
+  senderAddress: hello@apikey.com
