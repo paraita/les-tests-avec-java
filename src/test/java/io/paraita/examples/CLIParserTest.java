@@ -12,6 +12,8 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -38,7 +40,6 @@ class CLIParserTest {
     }
 
     @Test
-
     void testGetMailerFileDoesntExist() {
         when(config.getAbsolutePath()).thenReturn("config-existe-pas.yaml");
         Assertions.assertThrows(YAMLException.class, () -> {
@@ -72,13 +73,17 @@ class CLIParserTest {
 
     @Test
     void testGetAddressesListWith5ValidAddresses() {
-        when(addresses.getPath()).thenReturn("5_adresses_email_valides.txt");
+        Path path = FileSystems.getDefault().getPath("src", "test", "resources",
+                "5_adresses_email_valides.txt");
+        when(addresses.toPath()).thenReturn(path);
         assertThat(cliParser.getAddressesList().size(), is(5));
     }
 
     @Test
     void testGetAddressesListWith4ValidAnd1InvalidAddresses() {
-        when(addresses.getPath()).thenReturn("4_adresses_email_valides_1_invalide.txt");
+        Path path = FileSystems.getDefault().getPath("src", "test", "resources",
+                "4_adresses_email_valides_1_invalide.txt");
+        when(addresses.toPath()).thenReturn(path);
         assertThat(cliParser.getAddressesList().size(), is(4));
     }
 
