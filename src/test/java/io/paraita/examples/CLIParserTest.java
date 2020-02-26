@@ -1,6 +1,5 @@
 package io.paraita.examples;
 
-import io.paraita.examples.mail.Mailer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,28 +10,21 @@ import org.mockito.Mock;
 import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.nio.file.*;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class CLIParserTest {
 
     // flaky
-    @Mock
-    File config;
-
+    @Mock File config;
     // flaky
-    @Mock
-    File addresses;
-
-    @InjectMocks
-    CLIParser cliParser;
+    @Mock File addresses;
+    @InjectMocks CLIParser cliParser;
 
     @BeforeEach
     void setUp() {
@@ -73,28 +65,34 @@ class CLIParserTest {
 
     @Test
     void testGetAddressesListWith5ValidAddresses() {
-        Path path = FileSystems.getDefault().getPath("src", "test", "resources",
-                "5_adresses_email_valides.txt");
+        Path path = getPath("5_adresses_email_valides.txt");
         when(addresses.toPath()).thenReturn(path);
         assertThat(cliParser.getAddressesList().size(), is(5));
     }
 
     @Test
     void testGetAddressesListWith4ValidAnd1InvalidAddresses() {
-        Path path = FileSystems.getDefault().getPath("src", "test", "resources",
-                "4_adresses_email_valides_1_invalide.txt");
+        Path path = getPath("4_adresses_email_valides_1_invalide.txt");
         when(addresses.toPath()).thenReturn(path);
         assertThat(cliParser.getAddressesList().size(), is(4));
     }
 
     @Test
     void testGetAddressesListFileDoesntExist() {
-        fail();
+        when(addresses.toPath()).thenReturn(getPath("doesnt-exist.txt"));
+        List<String> addressesList = cliParser.getAddressesList();
+        assertThat(cliParser.getAddressesList().size(), is(0));
     }
 
     @Test
     void testGetAddressesListEmptyFile() {
-        fail();
+        when(addresses.toPath()).thenReturn(getPath("emails_vide.txt"));
+        List<String> addressesList = cliParser.getAddressesList();
+        assertThat(cliParser.getAddressesList().size(), is(0));
+    }
+
+    private Path getPath(String fileName) {
+        return FileSystems.getDefault().getPath("src", "test", "resources", fileName);
     }
 
 }
