@@ -9,9 +9,9 @@ import java.util.Map;
 
 public class SparkpostMailerImpl implements Mailer {
 
-    private String apiKey;
-    private String senderAddress;
-    private Client client;
+    protected String apiKey;
+    protected String senderAddress;
+    protected Client client;
 
 
     @Override
