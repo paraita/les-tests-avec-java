@@ -10,8 +10,8 @@ import org.mockito.Mock;
 import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.*;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -34,20 +34,22 @@ class CLIParserTest {
     @Test
     void testGetMailerFileDoesntExist() {
         when(config.getAbsolutePath()).thenReturn("config-existe-pas.yaml");
-        Assertions.assertThrows(YAMLException.class, () -> {
+        Assertions.assertThrows(NullPointerException.class, () -> {
             cliParser.getMailer();
         });
     }
 
     @Test
-    void testGetMailerSparkpostProvider() {
-        when(config.getAbsolutePath()).thenReturn("config-sparkpost.yaml");
+    void testGetMailerSparkpostProvider() throws Exception {
+        Path path = new File("src/test/resources/config-sparkpost.yaml").toPath();
+        when(config.toPath()).thenReturn(path);
         assertThat(cliParser.getMailer(), is(notNullValue()));
     }
 
     @Test
-    void testGetMailerGmailProviderIsNotSupported() {
-        when(config.getAbsolutePath()).thenReturn("config-gmail.yaml");
+    void testGetMailerGmailProviderIsNotSupported() throws Exception {
+        Path path = new File("src/test/resources/config-gmail.yaml").toPath();
+        when(config.toPath()).thenReturn(path);
         assertThat(cliParser.getMailer(), is(nullValue()));
     }
 
@@ -64,30 +66,30 @@ class CLIParserTest {
     }
 
     @Test
-    void testGetAddressesListWith5ValidAddresses() {
+    void testGetAddressesListWith5ValidAddresses() throws Exception {
         Path path = getPath("5_adresses_email_valides.txt");
         when(addresses.toPath()).thenReturn(path);
         assertThat(cliParser.getAddressesList().size(), is(5));
     }
 
     @Test
-    void testGetAddressesListWith4ValidAnd1InvalidAddresses() {
+    void testGetAddressesListWith4ValidAnd1InvalidAddresses() throws Exception {
         Path path = getPath("4_adresses_email_valides_1_invalide.txt");
         when(addresses.toPath()).thenReturn(path);
         assertThat(cliParser.getAddressesList().size(), is(4));
     }
 
     @Test
-    void testGetAddressesListFileDoesntExist() {
+    void testGetAddressesListFileDoesntExist() throws Exception {
         when(addresses.toPath()).thenReturn(getPath("doesnt-exist.txt"));
-        List<String> addressesList = cliParser.getAddressesList();
-        assertThat(cliParser.getAddressesList().size(), is(0));
+        Assertions.assertThrows(IOException.class, () -> {
+            cliParser.getAddressesList();
+        });
     }
 
     @Test
-    void testGetAddressesListEmptyFile() {
+    void testGetAddressesListEmptyFile() throws Exception {
         when(addresses.toPath()).thenReturn(getPath("emails_vide.txt"));
-        List<String> addressesList = cliParser.getAddressesList();
         assertThat(cliParser.getAddressesList().size(), is(0));
     }
 

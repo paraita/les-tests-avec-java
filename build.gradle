@@ -22,6 +22,15 @@ repositories {
     jcenter()
 }
 
+task customFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'io.paraita.examples.App'
+    }
+    baseName = 'mailsender'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:28.1-jre'
@@ -34,11 +43,11 @@ dependencies {
 
     compile 'info.picocli:picocli:4.2.0'
 
-    implementation 'org.simplejavamail:simple-java-mail:6.0.3'
+    compile 'org.simplejavamail:simple-java-mail:6.0.3'
 
-    implementation 'com.sparkpost:sparkpost-lib:0.22'
+    compile 'com.sparkpost:sparkpost-lib:0.22'
 
-    implementation 'org.yaml:snakeyaml:1.25'
+    compile 'org.yaml:snakeyaml:1.25'
 
     testImplementation 'org.hamcrest:hamcrest:2.2'
 
