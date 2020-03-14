@@ -9,7 +9,6 @@ import picocli.CommandLine.Option;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -24,8 +23,7 @@ public class CLIParser implements Callable<Integer> {
     @Option(names = {"-c", "--config"}, description = "Fichier de configuration SMTP", required = true)
     protected File config;
 
-    @Option(names = {"-a", "--addresses"}, description = "Fichier contenant la liste des adresses mail",
-            required = true)
+    @Option(names = {"-a", "--addresses"}, description = "Fichier contenant la liste des adresses mail", required = true)
     protected File addresses;
 
     @Option(names = {"-s", "--subject"}, description = "Sujet du message", required = true)
@@ -46,11 +44,9 @@ public class CLIParser implements Callable<Integer> {
     }
 
     protected List<String> getAddressesList() throws IOException {
-        List<String> addressesList = null;
-        addressesList = Files.lines(addresses.toPath())
-                    .filter(address -> emailAddressIsValid(address))
-                    .collect(Collectors.toList());
-        return addressesList;
+        return Files.lines(addresses.toPath())
+                .filter(address -> emailAddressIsValid(address))
+                .collect(Collectors.toList());
     }
 
     protected Mailer getMailer() throws FileNotFoundException {
@@ -75,12 +71,10 @@ public class CLIParser implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-
         List<String> addressesList = getAddressesList();
         Mailer mailer = getMailer();
         mailer.send(addressesList, "Test Paraita", "Corps du message !");
         return 0;
-
     }
 
 }
