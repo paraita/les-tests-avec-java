@@ -10,6 +10,8 @@ plugins {
     id 'java'
     id 'application'
     id "io.freefair.lombok" version "5.0.0-rc2"
+    id "org.sonarqube" version "3.3"
+    id 'jacoco'
 }
 
 repositories {
@@ -30,13 +32,13 @@ dependencies {
     implementation 'com.google.guava:guava:28.1-jre'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
-    compile 'info.picocli:picocli:4.2.0'
-    compile 'org.simplejavamail:simple-java-mail:6.0.3'
-    compile 'com.sparkpost:sparkpost-lib:0.22'
-    compile 'org.yaml:snakeyaml:1.25'
+    implementation 'info.picocli:picocli:4.2.0'
+    implementation 'org.simplejavamail:simple-java-mail:6.0.3'
+    implementation 'com.sparkpost:sparkpost-lib:0.22'
+    implementation 'org.yaml:snakeyaml:1.25'
     testImplementation 'org.hamcrest:hamcrest:2.2'
-    testCompile "org.mockito:mockito-core:2.+"
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.6.0'
+    testImplementation "org.mockito:mockito-core:2.+"
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.6.0'
 }
 
 application {
@@ -45,4 +47,16 @@ application {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+
