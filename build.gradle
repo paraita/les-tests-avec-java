@@ -58,4 +58,15 @@ jacocoTestReport {
     }
 }
 
-
+sonarqube {
+    properties {
+        property "sonar.exclusions", "**/*Generated.java"
+        property "sonar.projectKey", "paraita_les-tests-avec-java"
+        property "sonar.projectName", "les-tests-avec-java"
+        property "sonar.language", "java"
+        property "sonar.sources", "src/main/java"
+        property "sonar.tests", "src/test/java"
+        property "sonar.java.binaries", "build/classes/java/main"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test"
+    }
+}
